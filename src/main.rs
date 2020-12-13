@@ -7,37 +7,64 @@ use std::net::IpAddr;
 /// cidrcalc CLI takes CIDR notation and return network and subnet mask for it
 #[derive(Clap)]
 #[clap(
-    version = "1.0",
+    version = "2.0.0",
     author = "Yevhen Dubovskoy <edubovskoy@gmail.com>",
     setting = AppSettings::ArgRequiredElseHelp
 )]
 struct Opts {
-    /// Subnet specs in CIDR notation
-    #[clap(short, long)]
-    cidr: Option<String>,
+    #[clap(subcommand)]
+    subcommand: SubCommand,
+}
+
+#[derive(Clap)]
+enum SubCommand {
+    /// Parse CIDR notation and return address and mask
+    #[clap(name = "parse")]
+    Parse(ParseCommand),
+    /// Combine address and mask and create CIDR notation
+    #[clap(name = "compose")]
+    Compose(ComposeCommand),
+}
+
+#[derive(Clap)]
+struct ParseCommand {
+    cidr: String,
+}
+
+impl ParseCommand {
+    pub fn run(&self) -> anyhow::Result<()> {
+        let subnet: CIDRNotation = CIDRNotation::try_from(self.cidr.clone())?;
+        println!("Address: {}", subnet.addr);
+        println!("Subnet mask: {}", subnet.net_mask);
+        Ok(())
+    }
+}
+
+#[derive(Clap)]
+struct ComposeCommand {
     /// Network address
-    #[clap(short, long)]
-    network: Option<IpAddr>,
+    address: IpAddr,
     /// Subnetwork mask
-    #[clap(short, long)]
-    mask: Option<IpAddr>,
+    mask: IpAddr,
+}
+
+impl ComposeCommand {
+    pub fn run(&self) -> anyhow::Result<()> {
+        let cidr = CIDRNotation {
+            addr: self.address,
+            net_mask: self.mask,
+        };
+        let sn: String = cidr.try_into()?;
+        println!("{}", sn);
+        Ok(())
+    }
 }
 
 fn main() -> anyhow::Result<()> {
     let opts = Opts::parse();
-    if let Some(cidr) = opts.cidr {
-        let subnet: CIDRNotation = CIDRNotation::try_from(cidr)?;
-        println!("Address: {}", subnet.addr);
-        println!("Subnet mask: {}", subnet.net_mask)
-    } else if let Some(network) = opts.network {
-        if let Some(mask) = opts.mask {
-            let cidr = CIDRNotation {
-                addr: network,
-                net_mask: mask,
-            };
-            let sn: String = cidr.try_into()?;
-            println!("{}", sn);
-        }
+    match opts.subcommand {
+        SubCommand::Parse(cmd) => cmd.run()?,
+        SubCommand::Compose(cmd) => cmd.run()?,
     }
     Ok(())
 }
