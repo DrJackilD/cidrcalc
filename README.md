@@ -1,5 +1,11 @@
 # CIDR notation calculator
 
+## Installation
+```shell
+$ cargo build --release
+$ ./target/release/cidrcalc <SUBCOMMAND>
+```
+
 ## Usage
 ```shell
 cidrcalc 2.0.1

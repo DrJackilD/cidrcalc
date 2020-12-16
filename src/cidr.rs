@@ -41,8 +41,8 @@ impl TryFrom<String> for CIDRNotation {
 impl Into<String> for CIDRNotation {
     fn into(self) -> String {
         let bits: u8 = match self.net_mask {
-            IpAddr::V4(addr) => addr.octets().iter().map(|i| i.count_ones() as u8).sum(),
-            IpAddr::V6(addr) => addr.segments().iter().map(|i| i.count_ones() as u8).sum(),
+            IpAddr::V4(addr) => u32::from(addr).count_ones() as u8,
+            IpAddr::V6(addr) => u128::from(addr).count_ones() as u8,
         };
 
         let notation = format!("{}/{}", self.addr, bits);
