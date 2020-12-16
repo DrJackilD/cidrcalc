@@ -7,7 +7,7 @@ use std::net::IpAddr;
 /// cidrcalc CLI takes CIDR notation and return network and subnet mask for it
 #[derive(Clap)]
 #[clap(
-    version = "2.0.1",
+    version = "2.1.0",
     author = "Yevhen Dubovskoy <edubovskoy@gmail.com>",
     setting = AppSettings::ArgRequiredElseHelp
 )]
@@ -36,6 +36,11 @@ impl ParseCommand {
         let subnet: CIDRNotation = CIDRNotation::try_from(self.cidr.clone())?;
         println!("Address: {}", subnet.addr);
         println!("Subnet mask: {}", subnet.net_mask);
+        println!(
+            "Hosts range: {} - {}",
+            subnet.host_range.start(),
+            subnet.host_range.end()
+        );
         Ok(())
     }
 }
@@ -50,10 +55,7 @@ struct ComposeCommand {
 
 impl ComposeCommand {
     pub fn run(&self) -> anyhow::Result<()> {
-        let cidr = CIDRNotation {
-            addr: self.address,
-            net_mask: self.mask,
-        };
+        let cidr = CIDRNotation::new(self.address, self.mask)?;
         let sn: String = cidr.into();
         println!("{}", sn);
         Ok(())

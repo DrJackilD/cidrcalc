@@ -8,10 +8,6 @@ $ ./target/release/cidrcalc <SUBCOMMAND>
 
 ## Usage
 ```shell
-cidrcalc 2.0.1
-Yevhen Dubovskoy <edubovskoy@gmail.com>
-cidrcalc CLI takes CIDR notation and return network and subnet mask for it
-
 USAGE:
     cidrcalc <SUBCOMMAND>
 
@@ -31,6 +27,7 @@ SUBCOMMANDS:
 $ cidrcalc parse 192.168.0.1/32
 Address: 192.168.0.1
 Subnet mask: 255.255.255.255
+Hosts range: 192.168.0.1 - 192.168.0.1
 ```
 
 ### Get CIDR notation from network address and subnet mask

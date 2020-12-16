@@ -16,8 +16,9 @@ fn cli_parse() {
         .args(&["parse", "192.168.0.1/24"])
         .assert()
         .success()
-        .stdout(contains("Address: 192.168.0.1"))
-        .stdout(contains("Subnet mask: 255.255.255.0"));
+        .stdout(contains("Address: 192.168.0.0"))
+        .stdout(contains("Subnet mask: 255.255.255.0"))
+        .stdout(contains("Hosts range: 192.168.0.0 - 192.168.0.255"));
 }
 
 // `cidrcalc parse <CIDR Ipv6>` should return parsed CIDR notation as address and subnet mask
@@ -25,13 +26,14 @@ fn cli_parse() {
 fn cli_parse_ipv6() {
     Command::cargo_bin("cidrcalc")
         .unwrap()
-        .args(&["parse", "::1/127"])
+        .args(&["parse", "::f/100"])
         .assert()
         .success()
-        .stdout(contains("Address: ::1"))
+        .stdout(contains("Address: ::"))
         .stdout(contains(
-            "Subnet mask: ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe",
-        ));
+            "Subnet mask: ffff:ffff:ffff:ffff:ffff:ffff:f000:0",
+        ))
+        .stdout(contains("Hosts range: :: - ::15.255.255.255"));
 }
 
 // `cidrcalc parse <CIDR>` should return error in case of invalid input
