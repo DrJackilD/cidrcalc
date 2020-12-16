@@ -1,13 +1,13 @@
 /// CLI tool to calculate CIDR notation for subnetwork from IP and Subnet mask
 use cidrcalc::cidr::CIDRNotation;
 use clap::{AppSettings, Clap};
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 use std::net::IpAddr;
 
 /// cidrcalc CLI takes CIDR notation and return network and subnet mask for it
 #[derive(Clap)]
 #[clap(
-    version = "2.0.0",
+    version = "2.0.1",
     author = "Yevhen Dubovskoy <edubovskoy@gmail.com>",
     setting = AppSettings::ArgRequiredElseHelp
 )]
@@ -54,7 +54,7 @@ impl ComposeCommand {
             addr: self.address,
             net_mask: self.mask,
         };
-        let sn: String = cidr.try_into()?;
+        let sn: String = cidr.into();
         println!("{}", sn);
         Ok(())
     }

@@ -2,7 +2,8 @@
 
 ## Usage
 ```shell
-cidrcalc 2.0
+cidrcalc 2.0.1
+Yevhen Dubovskoy <edubovskoy@gmail.com>
 cidrcalc CLI takes CIDR notation and return network and subnet mask for it
 
 USAGE:

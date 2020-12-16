@@ -20,6 +20,20 @@ fn cli_parse() {
         .stdout(contains("Subnet mask: 255.255.255.0"));
 }
 
+// `cidrcalc parse <CIDR Ipv6>` should return parsed CIDR notation as address and subnet mask
+#[test]
+fn cli_parse_ipv6() {
+    Command::cargo_bin("cidrcalc")
+        .unwrap()
+        .args(&["parse", "::1/127"])
+        .assert()
+        .success()
+        .stdout(contains("Address: ::1"))
+        .stdout(contains(
+            "Subnet mask: ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe",
+        ));
+}
+
 // `cidrcalc parse <CIDR>` should return error in case of invalid input
 #[test]
 fn cli_parse_invalid() {
@@ -40,6 +54,17 @@ fn cli_compose() {
         .assert()
         .success()
         .stdout(contains("192.168.0.1/17"));
+}
+
+// `cidrcalc compose <ADDRESS Ipv6> <MASK Ipv6>` should return CIDR notation for given address and mask
+#[test]
+fn cli_compose_ipv6() {
+    Command::cargo_bin("cidrcalc")
+        .unwrap()
+        .args(&["compose", "::1", "ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe"])
+        .assert()
+        .success()
+        .stdout(contains("::1/127"));
 }
 
 // `cidrcalc compose <ADDRESS> <MASK>` should return an error in case of invalid input
