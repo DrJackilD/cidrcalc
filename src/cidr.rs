@@ -57,7 +57,7 @@ impl TryFrom<String> for CIDRNotation {
 
                 match input_addr {
                     IpAddr::V4(addr) => {
-                        if bit_length < 1 || bit_length > 32 {
+                        if !(1..=32).contains(&bit_length) {
                             return Err(anyhow::anyhow!("Invalid number of bits in mask"));
                         }
                         let net_mask_addr = ((!0u32) << (32 - bit_length)).into();
@@ -67,7 +67,7 @@ impl TryFrom<String> for CIDRNotation {
                             IpAddr::V4(Ipv4Addr::from(u32::from(addr) & u32::from(net_mask_addr)));
                     }
                     IpAddr::V6(addr) => {
-                        if bit_length < 1 || bit_length > 128 {
+                        if !(1..=128).contains(&bit_length) {
                             return Err(anyhow::anyhow!("Invalid number of bits in mask"));
                         }
                         let net_mask_addr = ((!0u128) << (128 - bit_length)).into();
@@ -85,14 +85,14 @@ impl TryFrom<String> for CIDRNotation {
     }
 }
 
-impl Into<String> for CIDRNotation {
-    fn into(self) -> String {
-        let bits: u8 = match self.net_mask {
+impl From<CIDRNotation> for String {
+    fn from(cidr: CIDRNotation) -> Self {
+        let bits: u8 = match cidr.net_mask {
             IpAddr::V4(addr) => u32::from(addr).count_ones() as u8,
             IpAddr::V6(addr) => u128::from(addr).count_ones() as u8,
         };
 
-        let notation = format!("{}/{}", self.addr, bits);
+        let notation = format!("{}/{}", cidr.addr, bits);
         notation
     }
 }
