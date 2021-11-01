@@ -2,7 +2,7 @@
 name = "cidrcalc"
 version = "2.1.0"
 authors = ["Evgeniy Dubovskoy <edubovskoy@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,6 +11,6 @@ anyhow = "1.0.*"
 clap = "3.0.0-beta.2"
 
 [dev-dependencies]
-assert_cmd = "1.0.*"
-predicates = "1.0.*"
+assert_cmd = "2.0.1"
+predicates = "2.0.2"
 
